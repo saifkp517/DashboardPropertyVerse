@@ -51,7 +51,7 @@ export default function MyChart({onDataUpdate}: any) {
 
   useEffect(() => {
     onDataUpdate(chartData)
-    console.log(chartData.valuesh)
+    console.log(chartData.values)
   }, [chartData, onDataUpdate])
 
   const handleChange = (e: any) => {

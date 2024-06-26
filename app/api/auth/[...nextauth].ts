@@ -1,8 +1,8 @@
-/**
 import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from 'axios';
+import { Session } from "next-auth";
 import jwt from 'jsonwebtoken';
 import { JWT } from 'next-auth/jwt';
 
@@ -82,4 +82,4 @@ const handler = NextAuth({
 });
 
 export { handler as GET, handler as POST };
-**/
+

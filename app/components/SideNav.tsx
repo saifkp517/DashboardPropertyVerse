@@ -167,7 +167,7 @@ export default function SideNav({ sendChangedComponent }: any) {
                                         className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 text-gray-700 font-semibold"
                                         style={{ backgroundColor: getRandomColor() }}
                                     >
-                                        {user ? user?.name.substring(0, 1).toUpperCase() : ''}
+                                        {user ? user?.name?.substring(0, 1).toUpperCase() : ''}
                                     </div>
                                     <div>
                                         <p className="text-sm text-gray-600">{user ? user.name : null}</p>

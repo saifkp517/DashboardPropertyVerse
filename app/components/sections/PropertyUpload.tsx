@@ -159,21 +159,21 @@ export default function PropertyUpload() {
       }
       setFormValues({
         building_name: '',
-      asset_type: '',
-      type: '',
-      investment_size: '',
-      lockin: '',
-      entry_yeild: '',
-      irr: '',
-      multiplier: '',
-      minimum_investment: '',
-      tenant_details: '',
-      location: '',
-      tenant: '',
-      funded: '',
-      overview: '',
-      additional: { heading: '', description: '', data: {} },
-      images: [],
+        asset_type: '',
+        type: '',
+        investment_size: '',
+        lockin: '',
+        entry_yeild: '',
+        irr: '',
+        multiplier: '',
+        minimum_investment: '',
+        tenant_details: '',
+        location: '',
+        tenant: '',
+        funded: '',
+        overview: '',
+        additional: { heading: '', description: '', data: {} },
+        images: [],
       })
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -250,39 +250,39 @@ export default function PropertyUpload() {
               </div>
               <div className="relative z-0 w-full mb-0 group">
                 <label className="block mb-2 text-sm font-medium text-gray-900">Investment Size(sq.ft)</label>
-                <input name="investment_size" value={formValues.investment_size} onChange={handleChange} type="number" className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder=" " required />
+                <input name="investment_size" value={formValues.investment_size} onChange={handleChange} type="text" className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder=" " required />
 
 
               </div>
               <div className="relative z-0 w-full mb-0 group">
                 <label className="block mb-2 text-sm font-medium text-gray-900">Lock In Period</label>
-                <input name="lockin" value={formValues.lockin} onChange={handleChange} type="number" className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder=" " required />
+                <input name="lockin" value={formValues.lockin} onChange={handleChange} type="text" className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder=" " required />
 
 
               </div>
               <div className="relative z-0 w-full mb-0 group">
                 <label className="block mb-2 text-sm font-medium text-gray-900">Target IRR</label>
-                <input name="irr" value={formValues.irr} onChange={handleChange} type="number" className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder=" " required />
+                <input name="irr" value={formValues.irr} onChange={handleChange} type="text" className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder=" " required />
 
 
               </div>
 
               <div className="relative z-0 w-full mb-0 group">
                 <label className="block mb-2 text-sm font-medium text-gray-900">Gross Entry Yeild</label>
-                <input name="entry_yeild" value={formValues.entry_yeild} onChange={handleChange} type="number" className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder=" " required />
+                <input name="entry_yeild" value={formValues.entry_yeild} onChange={handleChange} type="text" className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder=" " required />
 
 
               </div>
 
               <div className="relative z-0 w-full mb-0 group">
                 <label className="block mb-2 text-sm font-medium text-gray-900">Multiplier</label>
-                <input name="multiplier" value={formValues.multiplier} onChange={handleChange} type="number" className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder=" " required />
+                <input name="multiplier" value={formValues.multiplier} onChange={handleChange} type="text" className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder=" " required />
 
 
               </div>
               <div className="relative z-0 w-full mb-0 group">
                 <label className="block mb-2 text-sm font-medium text-gray-900">Minimum Investment</label>
-                <input name="minimum_investment" value={formValues.minimum_investment} onChange={handleChange} type="number" className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder=" " required />
+                <input name="minimum_investment" value={formValues.minimum_investment} onChange={handleChange} type="text" className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder=" " required />
 
 
               </div>
@@ -300,7 +300,7 @@ export default function PropertyUpload() {
               </div>
               <div className="relative z-0 w-full mb-0 group">
                 <label className="block mb-2 text-sm font-medium text-gray-900">Funded</label>
-                <input name="funded" value={formValues.funded} onChange={handleChange} type="number" className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder=" " required />
+                <input name="funded" value={formValues.funded} onChange={handleChange} type="text" className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder=" " required />
 
               </div>
               <div className="relative z-0 w-full mb-0 group">

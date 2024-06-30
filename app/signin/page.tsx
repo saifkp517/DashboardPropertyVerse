@@ -1,23 +1,27 @@
 'use client'
 import { useState } from 'react';
 import { redirect } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import axios from 'axios';
 
 export default function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errors, setErrors] = useState("")
 
-    const handleSignIn = () => {
-        axios.post(`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/signin/partner`, { email, password })
-            .then(response => {
-                const {token} = response.data;
-                localStorage.setItem('token', token);
-                window.location.href = '/dashboard'
-            })
-            .catch(error => {
-                console.error('Sign in error:', error);
-            });
-    }    
+    async function CredentialsLogin(e: any) {
+        e.preventDefault();
+        const response = await signIn('credentials', { email, password, redirect: false })
+        if (response?.error) {
+            alert("NO")
+            console.error('Authentication failed:', response.error);
+            setErrors(response.error)
+        }
+        else {
+            console.log(response)
+            window.location.href = '/dashboard'
+        }
+    }
 
     return (
         <div className="min-h-screen bg-gray-800 text-gray-900 flex justify-center">
@@ -27,8 +31,9 @@ export default function SignIn() {
                         <h1 className="text-2xl xl:text-3xl font-extrabold">
                             Sign In to PropertyVerse
                         </h1>
+
                         <div className="w-full flex-1 mt-8">
-                            <div className="flex flex-col items-center">
+                            {/* <div className="flex flex-col items-center">
                                 <button
                                     className="w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-blue-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline"
                                 >
@@ -60,9 +65,9 @@ export default function SignIn() {
                                     className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2">
                                     Or sign in with your email
                                 </div>
-                            </div>
+                            </div> */}
 
-                            <div className="mx-auto max-w-xs">
+                            <form onSubmit={CredentialsLogin} className="mx-auto max-w-xs">
                                 <input
                                     className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-400 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
                                     type="email" placeholder="email" value={email} onChange={e => setEmail(e.target.value)} />
@@ -70,8 +75,9 @@ export default function SignIn() {
                                     className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-400 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
                                     type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
                                 <button
+                                    type="submit"
                                     className="mt-5 tracking-wide font-semibold bg-blue-500 text-gray-100 w-full py-4 rounded-lg hover:bg-blue-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
-                                    onClick={handleSignIn}>
+                                >
                                     <svg className="w-6 h-6 -ml-2" fill="none" stroke="currentColor" strokeWidth="2"
                                         strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
@@ -87,7 +93,7 @@ export default function SignIn() {
                                         Sign Up
                                     </a>
                                 </p>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>

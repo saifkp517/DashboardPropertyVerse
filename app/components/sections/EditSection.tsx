@@ -14,8 +14,6 @@ export default function EditSection({ id }: any) {
   Chart.register(CategoryScale);
 
 
-
-
   interface chartInterface {
     labels: number[],
     values: number[],
@@ -24,19 +22,20 @@ export default function EditSection({ id }: any) {
   const [formValues, setFormValues] = useState<any>({
     building_name: '',
     asset_type: '',
-    investment_size: '',
-    lockin: '',
-    entry_yeild: '',
-    irr: '',
-    multiplier: '',
-    minimum_investment: '',
+    investment_size: 0,
+    lockin: 0,
+    entry_yeild: 0,
+    irr: 0,
+    multiplier: 0,
+    minimum_investment: 0,
+    tenant_details: '',
     location: '',
     tenant: '',
+    funded: 0,
     overview: '',
     additional: { heading: '', description: '', data: {} },
     images: [],
-    userId: ''
-  });
+  })
 
   const [heading, setHeading] = useState('');
   const [description, setDescription] = useState('')
@@ -58,6 +57,8 @@ export default function EditSection({ id }: any) {
           lockin: data.lockin,
           entry_yeild: data.entry_yeild,
           irr: data.irr,
+          tenant_details: data.tenant_details,
+          funded: data.funded,
           multiplier: data.multiplier,
           minimum_investment: data.minimum_investment,
           location: data.location,

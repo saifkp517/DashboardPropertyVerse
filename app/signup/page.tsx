@@ -18,7 +18,8 @@ export default function SignUp() {
         return emailRegex.test(email);
     };
 
-    const handleSignUp = () => {
+    const handleSignUp = (e: any) => {
+        e.preventDefault()
         // Reset previous error messages
         setFormError('');
         setPasswordMatchError('');
@@ -39,10 +40,8 @@ export default function SignUp() {
             return;
         }
 
-        if (phone )
-
         // Proceed with sign-up logic
-        axios.post(`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/signup/partner`, { name, password, email })
+        axios.post(`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/signup/dashboard`, { name, email, password })
             .then(response => {
                 window.location.href = '/signin'
             })
@@ -60,7 +59,7 @@ export default function SignUp() {
                             Sign Up with PropertyVerse
                         </h1>
                         <div className="w-full flex-1 mt-8">
-                            <div className="mx-auto max-w-xs">
+                            <form onSubmit={handleSignUp} className="mx-auto max-w-xs">
                                 {formError && <p className="text-red-500 mt-2">{formError}</p>}
                                 <input
                                     className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-400 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
@@ -78,8 +77,9 @@ export default function SignUp() {
                                 {passwordMatchError && <p className="text-red-500 mt-2">{passwordMatchError}</p>}
 
                                 <button
+                                    type="submit"
                                     className="mt-5 tracking-wide font-semibold bg-blue-500 text-gray-100 w-full py-4 rounded-lg hover:bg-blue-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
-                                    onClick={handleSignUp}>
+                                >
                                     <svg className="w-6 h-6 -ml-2" fill="none" stroke="currentColor" strokeWidth="2"
                                         strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                                         <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
@@ -95,7 +95,7 @@ export default function SignUp() {
                                         Sign In
                                     </a>
                                 </p>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>

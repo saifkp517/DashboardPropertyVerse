@@ -4,6 +4,7 @@ import Head from 'next/head'
 import Image from 'next/image';
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import MyTable from '../tools/Table';
+import { Editor } from '@tinymce/tinymce-react';
 import { CategoryScale, Chart } from "chart.js";
 import { Bar } from 'react-chartjs-2';
 import axios from 'axios'
@@ -21,35 +22,6 @@ export default function PropertyUpload() {
 
   const [user, setUser] = useState<any>("");
 
-
-
-  useEffect(() => {
-
-    const token: string | null = localStorage.getItem('token');
-
-    if (token) {
-      try {
-        // Decode the token
-        const tokenWithoutBearer: string = token.substring(7); // Remove 'Bearer ' prefix
-        setUser(jwtDecode(tokenWithoutBearer));
-
-        setFormValues((prevValues: any) => ({
-          ...prevValues,
-          userId: user.email || '' // Default to empty string if user.email is undefined
-        }));
-
-        // Now you can use the user object safely
-      } catch (error) {
-        // Handle decoding errors
-        console.error('Error decoding JWT token:', error);
-      }
-    } else {
-      // Handle case when token is not found
-      console.error('Token not found in localStorage');
-    }
-  }, [user.email])
-
-
   const [currentIndex, setCurrentIndex] = useState(0);
   let [tableIndex, setTableIndex] = useState(0);
   let [chartIndex, setChartIndex] = useState(0);
@@ -63,23 +35,32 @@ export default function PropertyUpload() {
   const [inputType, setinputType] = useState("");
   const [additionalInfo, setAdditionalInfo] = useState({});
 
-  const [formValues, setFormValues] = useState<any>({
-    building_name: '',
-    asset_type: '',
-    investment_size: '',
-    lockin: '',
-    entry_yeild: '',
-    irr: '',
-    multiplier: '',
-    minimum_investment: '',
-    location: '',
-    tenant: '',
-    funded: '',
-    overview: '',
-    additional: { heading: '', description: '', data: {} },
-    images: [],
-    userId: ''
+  const [formValues, setFormValues] = useState(() => {
+    const savedFormValues = localStorage.getItem('formValues');
+
+    return savedFormValues ? JSON.parse(savedFormValues) : {
+      building_name: '',
+      asset_type: '',
+      type: '',
+      investment_size: 0,
+      lockin: 0,
+      entry_yeild: 0,
+      irr: 0,
+      multiplier: 0,
+      minimum_investment: 0,
+      tenant_details: '',
+      location: '',
+      tenant: '',
+      funded: 0,
+      overview: '',
+      additional: { heading: '', description: '', data: {} },
+      images: [],
+    };
   })
+
+  useEffect(() => {
+    localStorage.setItem('formValues', JSON.stringify(formValues));
+  }, [formValues])
 
   function handleChange(evt: any) {
     const value = evt.target.value;
@@ -87,6 +68,7 @@ export default function PropertyUpload() {
       ...formValues,
       [evt.target.name]: value
     });
+    console.log(formValues)
   }
 
   const receiveChartData = (data: chartInterface) => {
@@ -156,31 +138,47 @@ export default function PropertyUpload() {
 
   async function submitHandler(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log(chartData?.values)
+    try {
+      const uploadResponse = await handleUpload();
+      // Access the updated formValues after the image upload
+      const imagePaths = uploadResponse.data.files.map((file: any) => file.path);
+      console.log(imagePaths);
 
-    // try {
-    //   const uploadResponse = await handleUpload();
-    //   // Access the updated formValues after the image upload
-    //   const imagePaths = uploadResponse.data.files.map((file: any) => file.path);
-    //   console.log(imagePaths);
+      const updatedValues = {
+        ...formValues,
+        images: imagePaths
+      };
 
-    //   const updatedValues = {
-    //     ...formValues,
-    //     images: imagePaths
-    //   };
+      console.log("Updated values:", updatedValues);
 
-    //   console.log("Updated values:", updatedValues);
-
-    //   // Perform the axios POST request with the updated values
-    //   const res = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/createproperty`, updatedValues);
-    //   console.log(res);
-    //   if (res.data.success) {
-    //     alert("Success!");
-    //   }
-    // } catch (error) {
-    //   console.error('Error submitting form:', error);
-    //   alert("An error occurred while submitting the form");
-    // }
+      // Perform the axios POST request with the updated values
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}/createproperty`, updatedValues);
+      console.log(res);
+      if (res.data.success) {
+        alert("Success!");
+      }
+      setFormValues({
+        building_name: '',
+        asset_type: '',
+        type: '',
+        investment_size: 0,
+        lockin: 0,
+        entry_yeild: 0,
+        irr: 0,
+        multiplier: 0,
+        minimum_investment: 0,
+        tenant_details: '',
+        location: '',
+        tenant: '',
+        funded: 0,
+        overview: '',
+        additional: { heading: '', description: '', data: {} },
+        images: [],
+      })
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert("An error occurred while submitting the form");
+    }
   }
 
 
@@ -232,6 +230,9 @@ export default function PropertyUpload() {
   return (
 
     <div className="">
+      <p className="font-bold text-3xl">Enter Property Details</p>
+      <br />
+      <hr className=' border-t border-gray-400' />
       <div className="grid grid-cols-1">
 
         <div className="">
@@ -240,7 +241,7 @@ export default function PropertyUpload() {
               <label className="block mb-2 text-sm font-medium text-gray-900">Building Name</label>
               <input name="building_name" value={formValues.building_name} onChange={handleChange} type="text" className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder=" " required />
             </div>
-            <div className="grid md:grid-cols-4 md:gap-6 mb-5">
+            <div className="grid content-start md:grid-cols-3 lg:grid-cols-5 md:gap-6 mb-5">
               <div className="relative z-0 w-full mb-0 group">
                 <label className="block mb-2 text-sm font-medium text-gray-900">Asset Type</label>
                 <input name="asset_type" value={formValues.asset_type} onChange={handleChange} type="text" className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder=" " required />
@@ -302,13 +303,65 @@ export default function PropertyUpload() {
                 <input name="funded" value={formValues.funded} onChange={handleChange} type="number" className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder=" " required />
 
               </div>
+              <div className="relative z-0 w-full mb-0 group">
+                <label className="block mb-2 text-sm font-medium text-gray-900">Property Type</label>
+                <select
+                  name="type"
+                  value={formValues.type}
+                  onChange={handleChange}
+                  className="shadow-sm border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  required
+                >
+                  <option value="">Select an option</option>
+                  <option value="Commercial">Commercial</option>
+                  <option value="Industrial">Industrial</option>
+                  <option value="Agriculture">Agriculture</option>
+                  <option value="Residential">Residential</option>
+                </select>
+              </div>
             </div>
-            <div className="relative z-0 w-full mb-8 group">
-              <label className="block mb-2 text-sm font-medium text-gray-900">Overview</label>
-              <textarea name="overview" value={formValues.overview} onChange={handleChange} className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder=" " required />
+            <div className="relative z-0 w-full mb-0 group">
+              <label className="block mb-2 text-sm font-medium text-gray-900">Tenant</label>
+              <input name="tenant" value={formValues.tenant} onChange={handleChange} type="text" className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder=" " required />
+              <br />
+              <label className="block mb-2 text-lg font-medium text-gray-900">Tenant Details</label>
+              <Editor
+                apiKey='6ptxtjgx9bf97zuaxyg08avnq1fl6krx5hdcvcrqf9vzjwnt'
+                init={{
+                  toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                  placeholder: "Write a Brief Description on the Property"
+                }}
+                onEditorChange={(content) => {
+                  setFormValues({
+                    ...formValues,
+                    tenant_details: content
+                  })
+                }}
+
+              />
 
             </div>
-            <div className="relative z-0 w-full mb-8 group">
+            <div className="relative z-0 w-full mt-8 group">
+              <label className="block mb-2 text-lg font-medium text-gray-900">Overview</label>
+              <Editor
+                apiKey='6ptxtjgx9bf97zuaxyg08avnq1fl6krx5hdcvcrqf9vzjwnt'
+                init={{
+
+                  toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                  placeholder: "Write a Brief Description on the Property"
+                }}
+                onEditorChange={(content) => {
+                  setFormValues({
+                    ...formValues,
+                    overview: content
+                  })
+                }}
+
+              />
+
+            </div>
+
+            <div className="relative z-0 w-full my-8 group">
               <label className="block mb-2 text-sm font-medium text-gray-900">Property Visuals</label>
               <input name="photos" type='file' onChange={handleImageChange} multiple className="shadow-sm  border border-gray-500 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full h-4/6 p-2.5" placeholder=" " required />
             </div>
@@ -414,7 +467,7 @@ export default function PropertyUpload() {
               <div className="text-sm tracking-tighter text-gray-600 mx-2">
                 <h1 className=" font-bold text-blueTheme text-lg mb-2 underline">Overview</h1>
                 <p className='break-words'>
-                  {formValues.overview}
+                  <div dangerouslySetInnerHTML={{ __html: formValues.overview }} />
                 </p>
 
 

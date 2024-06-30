@@ -7,8 +7,10 @@ const nextConfig = {
         
     },
     env: {
-        NEXT_PUBLIC_SERVER_DOMAIN: process.env.NEXT_PUBLIC_SERVER_DOMAIN
+        NEXT_PUBLIC_SERVER_DOMAIN: process.env.NEXT_PUBLIC_SERVER_DOMAIN,
     }
 };
 
 export default nextConfig;
+
+

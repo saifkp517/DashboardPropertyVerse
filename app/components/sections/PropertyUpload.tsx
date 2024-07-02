@@ -20,12 +20,17 @@ export default function PropertyUpload() {
     values: number[],
   }
 
+  interface Image {
+    url: string;
+    isMainImage: boolean;
+  }
+
   const [user, setUser] = useState<any>("");
 
   const [currentIndex, setCurrentIndex] = useState(0);
   let [tableIndex, setTableIndex] = useState(0);
   let [chartIndex, setChartIndex] = useState(0);
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [selectedImages, setSelectedImages] = useState<Image[]>([]);
   const [uploadImages, setUploadImages] = useState<FormData>(new FormData());
   const [chartData, setChartData] = useState<chartInterface | null>(null)
   const [heading, setHeading] = useState('');
@@ -63,10 +68,9 @@ export default function PropertyUpload() {
   }, [formValues])
 
   function handleChange(evt: any) {
-    const value = evt.target.value;
     setFormValues({
       ...formValues,
-      [evt.target.name]: value
+      [evt.target.name]: evt.target.value
     });
     console.log(formValues)
   }
@@ -106,7 +110,9 @@ export default function PropertyUpload() {
         return mergedFormData;
       });
 
-      const newImagesArray: string[] = Array.from(files).map((file) => URL.createObjectURL(file));
+      const newImagesArray: Image[] = Array.from(files).map((file): Image => {
+        return { url: URL.createObjectURL(file), isMainImage: false}
+      });
       setSelectedImages(prevImages => [...prevImages, ...newImagesArray]);
 
     }
@@ -132,6 +138,14 @@ export default function PropertyUpload() {
     console.log(selectedImages)
   }
 
+  const setMainImage = (index: number) => {
+    setSelectedImages(selectedImages.map((item, i) => ({
+      ...item,
+      isMainImage: i === index
+    })))
+    console.log(selectedImages)
+  }
+
   function HandleTableData(data: any) {
     setTabledata(data);
   }
@@ -141,7 +155,9 @@ export default function PropertyUpload() {
     try {
       const uploadResponse = await handleUpload();
       // Access the updated formValues after the image upload
-      const imagePaths = uploadResponse.data.files.map((file: any) => file.path);
+      const imagePaths = uploadResponse.data.files.map((file: any) => {
+        return { url: file.path, isMainImage: false }
+      });
       console.log(imagePaths);
 
       const updatedValues = {
@@ -370,19 +386,30 @@ export default function PropertyUpload() {
               {selectedImages.map((image, index) => (
                 <div key={index} className="relative inline-block">
                   <Image
-                    src={image}
+                    src={image.url}
                     className="object-cover h-1/2 w-1/2 rounded-lg m-3"
                     alt={`Image ${index}`}
                     width={500} // Adjust as needed
                     height={200} // Adjust as needed
                   />
-                  <button
-                    type='button'
-                    onClick={() => handleRemoveImage(index)}
-                    className="absolute top-0 right-0 mt-2 mr-2 bg-red-500 text-white px-2 py-1 rounded-md text-sm hover:bg-red-600 focus:outline-none focus:bg-red-600"
-                  >
-                    Remove
-                  </button>
+                  <div className="flex absolute top-0 right-0">
+                    <button
+                      type='button'
+                      onClick={() => handleRemoveImage(index)}
+                      className=" mt-2 mr-2 bg-red-500 text-white px-2 py-1 rounded-md text-sm hover:bg-red-600 focus:outline-none focus:bg-red-600"
+                    >
+                      Remove
+                    </button>
+                    <button
+                      type='button'
+                      onClick={() => setMainImage(index)}
+                      className=" mt-2 mr-2 bg-blue-500 text-white px-2 py-1 rounded-md text-sm hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                    >
+                      {image.isMainImage == true ? "Main": "Set as Main"}
+                    </button>
+                  </div>
+
+
                 </div>
               ))}
             </div>
